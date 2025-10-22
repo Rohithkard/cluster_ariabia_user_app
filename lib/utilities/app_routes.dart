@@ -13,4 +13,5 @@ abstract class Routes {
   static const coupon = '/coupon';
   static const helpAndSupport = '/helpAndSupport';
   static const toPaymentRoute = '/toPaymentRoute';
+  static const toTermsAndConditions = '/toTermsAndConditions';
 }

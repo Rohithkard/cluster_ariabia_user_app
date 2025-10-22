@@ -38,26 +38,19 @@ String getShortMonthText(int monthNumber) {
   return DateFormat.MMM().format(date); // 'MMM' gives the short month name
 }
 
-validateLoginPage({var value}) {
-  if (value == null || value.isEmpty) {
-    return 'Please enter some text';
+String? validateLoginPage({required String value}) {
+  if (value.isEmpty) {
+    return 'Please enter your mobile number';
   }
-  // Check if the value contains an '@' symbol which is typical for emails
-  // if (value.contains('@')) {
-    // Regular expression to validate an email
-    String pattern = r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b';
-    RegExp regex = RegExp(pattern);
-    if (!regex.hasMatch(value)) {
-      return 'Enter a valid email address';
-    }
-  // } else {
-  //   // Regular expression to validate a mobile number
-  //   String pattern = r'(^[0-9]{10}$)';
-  //   RegExp regex = RegExp(pattern);
-  //   if (!regex.hasMatch(value)) {
-  //     return 'Enter a valid mobile number';
-  //   }
-  // }
+
+  // Accept formats like 0598324755 or 598324755
+  // Saudi mobile numbers typically start with 05 or 5 and are 9–10 digits long.
+  final mobilePattern = RegExp(r'^(05|5)[0-9]{8}$');
+
+  if (!mobilePattern.hasMatch(value)) {
+    return 'Enter a valid mobile number';
+  }
+
   return null;
 }
 

@@ -152,6 +152,14 @@ class ListTilePart extends StatelessWidget {
           },
         ).cPadSymmetric(h: 8),
         ListTileItemProfile(
+          name: 'Terms & Conditions',
+          icon: aboutUs,
+          onTap: () {
+            controller.cameFromProfile = true;
+            Get.toNamed(Routes.toTermsAndConditions);
+          },
+        ).cPadSymmetric(h: 8),
+        ListTileItemProfile(
           name: 'Privacy Policy',
           icon: privacyPolicy,
           onTap: () {

@@ -26,6 +26,8 @@ import 'package:cluster_arabia/ui/pages/profile/bind/profile_bind.dart';
 import 'package:cluster_arabia/ui/pages/profile/view/profile_view.dart';
 import 'package:cluster_arabia/ui/pages/splash/bind/splash_bind.dart';
 import 'package:cluster_arabia/ui/pages/splash/view/spash_view.dart';
+import 'package:cluster_arabia/ui/pages/terms_and_conditions/bind/terms_bind.dart';
+import 'package:cluster_arabia/ui/pages/terms_and_conditions/view/terms_view.dart';
 import 'package:cluster_arabia/utilities/app_routes.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
@@ -100,6 +102,11 @@ abstract class AppPages {
       name: Routes.toPaymentRoute,
       page: () => const PaymentPage(),
       binding: PaymentBind(),
+    ),
+    GetPage(
+      name: Routes.toTermsAndConditions,
+      page: () => const TermsPage(),
+      binding: TermsAndConditionBinding(),
     ),
   ];
 }

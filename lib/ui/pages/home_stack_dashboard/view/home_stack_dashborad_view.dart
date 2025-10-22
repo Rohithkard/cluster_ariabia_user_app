@@ -394,6 +394,18 @@ class HomeDrawer extends StatelessWidget {
                       selected: false,
                     ).cPadSymmetric(h: 8),
                     ListTileItem(
+                      name: 'Terms and Conditions',
+                      icon: aboutUs,
+                      onTap: () {
+                        HomeStackDashboardController.to.cameFromProfile = false;
+                        Get.back();
+                        Get.toNamed(Routes.toTermsAndConditions);
+                      },
+                      iconColor: Color.fromRGBO(101, 101, 101, 1),
+                      choosedColor:Colors.transparent,
+                      selected: false,
+                    ).cPadSymmetric(h: 8),
+                    ListTileItem(
                       name: 'Privacy Policy',
                       icon: privacyPolicy,
                       onTap: () {

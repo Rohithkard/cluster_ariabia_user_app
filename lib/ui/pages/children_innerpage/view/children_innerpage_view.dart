@@ -15,7 +15,7 @@ class ChildrenInnerPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: commonBackGroundColor,
       appBar: AppBar(
-        backgroundColor: commonBackGroundColor,
+        backgroundColor: Colors.white,
         leading: InkWell(
           onTap: (){
             Get.back();
@@ -33,7 +33,6 @@ class ChildrenInnerPage extends StatelessWidget {
               children: [
                 const PickupPointSection().cExpanded(1),
                 const SizedBox(width: 15,),
-                const MapSection().cExpanded(1),
               ],
             ),
             const BusDetails(),

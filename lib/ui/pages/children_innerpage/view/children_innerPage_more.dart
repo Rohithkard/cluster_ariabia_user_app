@@ -15,50 +15,80 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class ProfilePart extends StatelessWidget {
-  const ProfilePart({
-    super.key,
-  });
+  const ProfilePart({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ChildrenInnerPageController>(builder: (logic) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CachedNetworkImage(
-            imageUrl: (logic.studentViewById?.data?.img ?? ''),
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            width: 80,
-            height: 80,
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-          ),
-          const SizedBox(
-            width: 15,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                logic.studentViewById?.data?.studentName ?? '',
-                style: customStyle(20.0, Colors.black, FontWeight.bold),
+      final data = logic.studentViewById?.data;
+
+      return Container(
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(top: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Circular image with fallback
+            ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: CachedNetworkImage(
+                imageUrl: data?.img ?? '',
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+                placeholder: (_, __) =>
+                    const CircularProgressIndicator(strokeWidth: 2),
+                errorWidget: (_, __, ___) => const CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Color(0xFFE0E0E0),
+                  child: Icon(Icons.person, color: Colors.white, size: 40),
+                ),
               ),
-              const SizedBox(
-                height: 5,
+            ),
+            const SizedBox(width: 16),
+            // Info Column
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data?.studentName ?? 'Student Name',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${data?.std ?? ''} ${data?.division ?? ''}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.grey[700]),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    data?.school?.schoolName ?? '',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.grey[600]),
+                  ),
+                ],
               ),
-              Text(
-                '${logic.studentViewById?.data?.std ?? ''} ${logic.studentViewById?.data?.division ?? ''}',
-                style: customStyle(11.0, Colors.black, FontWeight.normal),
-              ),
-              const SizedBox(
-                height: 3,
-              ),
-              Text(
-                logic.studentViewById?.data?.school?.schoolName ?? '',
-                style: customStyle(10.0, Colors.black, FontWeight.normal),
-              ),
-            ],
-          ).cExpanded(1)
-        ],
+            ),
+          ],
+        ),
       );
     });
   }
@@ -70,83 +100,108 @@ class AddressPart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ChildrenInnerPageController>(builder: (logic) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Address',
-            style: customStyle(15.0, Colors.black, FontWeight.bold),
-          ),
-          Text(
-            logic.studentViewById?.data?.address ?? '',
-            style: customStyle(12.0, Colors.black, FontWeight.normal),
-          ).cPadOnly(t: 5),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  logic.clearVariable();
-                  showDisableDialog(context: context);
-                },
-                child: Container(
-                  // width: 150,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: primaryColorPurple),
-                    borderRadius: BorderRadius.circular(8),
-                    // boxShadow: [BoxShadow(color: Color.fromRGBO(0,0,0,.1),blurRadius: 12,spreadRadius: 3)]
+      final data = logic.studentViewById?.data;
+
+      return Container(
+        margin: const EdgeInsets.only(top: 16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Address',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              data?.address ?? 'No address available',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[800],
+                    height: 1.4,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SvgPicture.asset(
-                        disableRequestIcon,
-                        width: 15,
-                        height: 15,
-                      ),
-                      Text(
-                        'Request To Disable',
-                        style: customStyle(
-                            13.0, primaryColorPurple, FontWeight.bold),
-                      )
-                    ],
-                  ),
-                ),
-              ).cExpanded(1),
-              const SizedBox(
-                width: 5,
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  // width: 150,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: primaryColorPurple),
-                    borderRadius: BorderRadius.circular(8),
-                    // boxShadow: [BoxShadow(color: Color.fromRGBO(0,0,0,.1),blurRadius: 10,spreadRadius: 2)]
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SvgPicture.asset(locationIcon),
-                      Text(
-                        'Track Location',
-                        style: customStyle(
-                            13.0, primaryColorPurple, FontWeight.bold),
-                      )
-                    ],
-                  ),
-                ),
-              ).cExpanded(1),
-            ],
-          ),
-        ],
-      ).cPadOnly(t: 10);
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                _modernActionButton(
+                  icon: disableRequestIcon,
+                  label: 'Request Disable',
+                  color: Colors.redAccent,
+                  onTap: () {
+                    logic.clearVariable();
+                    showDisableDialog(context: context);
+                  },
+                ).cExpanded(1),
+                const SizedBox(width: 10),
+                // _modernActionButton(
+                //   icon: locationIcon,
+                //   label: 'Track Location',
+                //   color: primaryColorPurple,
+                //   onTap: () {},
+                // ).cExpanded(1),
+              ],
+            ),
+          ],
+        ),
+      );
     });
+  }
+
+  /// Reusable modern button
+  Widget _modernActionButton({
+    required String icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      child: Ink(
+        height: 44,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              color.withOpacity(0.15),
+              color.withOpacity(0.05),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.4)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(icon, width: 18, height: 18, color: color),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.w600,
+                fontSize: 13.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -295,314 +350,242 @@ void showDisableDialog({required BuildContext context}) async {
 //End Dialog
 
 class SchoolDetails extends StatelessWidget {
-  const SchoolDetails({
-    super.key,
-  });
+  const SchoolDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ChildrenInnerPageController>(builder: (logic) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'School',
-            style: customStyle(15.0, Colors.black, FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-                color: const Color.fromRGBO(232, 231, 233, 1),
-                borderRadius: BorderRadius.circular(10)),
-            child: Stack(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SvgPicture.asset(
-                      schoolImage,
-                      height: 80,
-                      width: 80,
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            width: 200,
-                            child: Text(
-                              logic.studentViewById?.data?.school?.schoolName ??
-                                  '',
-                              style: customStyle(
-                                  14.0, Colors.black, FontWeight.bold),
-                            )),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          '${logic.studentViewById?.data?.std ?? ''} (${logic.studentViewById?.data?.division ?? ''})',
-                          style: customStyle(
-                              12.0, Colors.black, FontWeight.normal),
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          logic.studentViewById?.data?.admissionNo ?? '',
-                          style: customStyle(
-                              12.0, Colors.black, FontWeight.normal),
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          logic.studentViewById?.data?.school?.phone ?? '',
-                          style: customStyle(
-                              12.0, Colors.black, FontWeight.normal),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                IconButton(
-                    onPressed: () {
-                      makePhoneCall(
-                          phoneNumber:
-                              logic.studentViewById?.data?.school?.phone ?? '');
-                    },
-                    icon: const Icon(
-                      Icons.call,
-                      size: 18,
-                    )).cPosition(b: -10, r: -10)
-              ],
+      final school = logic.studentViewById?.data?.school;
+
+      return _ModernCard(
+        title: 'School Information',
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              schoolImage,
+              width: 70,
+              height: 70,
             ),
-          )
-        ],
-      ).cPadOnly(t: 10);
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    school?.schoolName ?? 'N/A',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    logic.studentViewById?.data?.admissionNo ?? '',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey[700],
+                        ),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.call, size: 14, color: Colors.green[700]),
+                      const SizedBox(width: 6),
+                      Text(
+                        school?.phone ?? 'No contact',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: Colors.grey[800]),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon:
+                  const Icon(Icons.phone_in_talk_rounded, color: Colors.green),
+              onPressed: () => makePhoneCall(phoneNumber: school?.phone ?? ''),
+            )
+          ],
+        ),
+      );
     });
   }
 }
 
+/// ✅ Modern Bus Details Card
 class BusDetails extends StatelessWidget {
-  const BusDetails({
-    super.key,
-  });
+  const BusDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ChildrenInnerPageController>(builder: (logic) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Bus Info',
-            style: customStyle(15.0, Colors.black, FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-                color: const Color.fromRGBO(232, 231, 233, 1),
-                borderRadius: BorderRadius.circular(10)),
-            child: Stack(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: (logic.studentViewById?.data?.busInRoute
-                              ?.busInfo?.img ??
-                          busImage),
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      width: 80,
-                      height: 80,
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    ),
-                    // Image.network(logic.studentViewById?.data?.busInRoute?.busInfo?.img??busImage,height: 80,width: 80,),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          logic.studentViewById?.data?.busInRoute?.busInfo
-                                  ?.driverName ??
-                              '',
-                          style:
-                              customStyle(14.0, Colors.black, FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          logic.studentViewById?.data?.busInRoute?.busInfo
-                                  ?.busModel ??
-                              '',
-                          style: customStyle(
-                              12.0, Colors.black, FontWeight.normal),
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          logic.studentViewById?.data?.busInRoute?.busInfo
-                                  ?.busNo ??
-                              '',
-                          style: customStyle(
-                              12.0, Colors.black, FontWeight.normal),
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          logic.studentViewById?.data?.busInRoute?.busInfo
-                                  ?.driverPhone ??
-                              '',
-                          style: customStyle(
-                              12.0, Colors.black, FontWeight.normal),
-                        ),
-                      ],
-                    )
-                  ],
+      final bus = logic.studentViewById?.data?.busInRoute?.busInfo;
+
+      return _ModernCard(
+        title: 'Bus Information',
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: CachedNetworkImage(
+                imageUrl: bus?.img ?? busImage,
+                width: 70,
+                height: 70,
+                fit: BoxFit.cover,
+                placeholder: (_, __) => const SizedBox(
+                  width: 70,
+                  height: 70,
+                  child:
+                      Center(child: CircularProgressIndicator(strokeWidth: 2)),
                 ),
-                IconButton(
-                    onPressed: () {
-                      makePhoneCall(
-                          phoneNumber: logic.studentViewById?.data?.busInRoute
-                                  ?.busInfo?.driverPhone ??
-                              '');
-                    },
-                    icon: const Icon(
-                      Icons.call,
-                      size: 18,
-                    )).cPosition(b: -10, r: -10)
-              ],
+                errorWidget: (_, __, ___) => const Icon(
+                  Icons.directions_bus_rounded,
+                  size: 50,
+                  color: Colors.grey,
+                ),
+              ),
             ),
-          )
-        ],
-      ).cPadOnly(t: 10);
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(bus?.driverName ?? 'Driver Not Assigned',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall
+                          ?.copyWith(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 4),
+                  Text(bus?.busModel ?? '',
+                      style: Theme.of(context).textTheme.bodySmall),
+                  const SizedBox(height: 4),
+                  Text('Bus No: ${bus?.busNo ?? ''}',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: Colors.grey[700])),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.call, size: 14, color: Colors.green[700]),
+                      const SizedBox(width: 6),
+                      Text(bus?.driverPhone ?? '',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.grey[800])),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.phone_rounded, color: Colors.green),
+              onPressed: () =>
+                  makePhoneCall(phoneNumber: bus?.driverPhone ?? ''),
+            ),
+          ],
+        ),
+      );
     });
   }
 }
 
+/// ✅ Modern Pickup Point Card
 class PickupPointSection extends StatelessWidget {
   const PickupPointSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ChildrenInnerPageController>(builder: (logic) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Pickup Point',
-            style: customStyle(15.0, Colors.black, FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 7,
-          ),
-          Container(
-            width: context.cWidth,
-            // height: 110,
-            decoration: BoxDecoration(
-                color: const Color.fromRGBO(232, 231, 233, 1),
-                borderRadius: BorderRadius.circular(11)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Pickup point Name : ',
-                  style: customStyle(11.0, Colors.black, FontWeight.normal),
-                ),
-                Text(
-                  logic.studentViewById?.data?.pickUp?.pickUpName ?? '',
-                  style: customStyle(11.0, Colors.black, FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  'Dropping point Name : ',
-                  style: customStyle(11.0, Colors.black, FontWeight.normal),
-                ),
-                Text(
-                  logic.studentViewById?.data?.school?.schoolName ?? '',
-                  style: customStyle(11.0, Colors.black, FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  'Route Name : ',
-                  style: customStyle(11.0, Colors.black, FontWeight.normal),
-                ),
-                Text(
-                  logic.studentViewById?.data?.busInRoute?.routeInfo
-                          ?.routeName ??
-                      '',
-                  style: customStyle(11.0, Colors.black, FontWeight.bold),
-                ),
-              ],
-            ).cPadAll(8),
-          )
-        ],
-      ).cPadOnly(t: 10);
+      final pickup = logic.studentViewById?.data?.pickUp;
+      final route = logic.studentViewById?.data?.busInRoute?.routeInfo;
+      final school = logic.studentViewById?.data?.school;
+
+      return _ModernCard(
+        title: 'Pickup & Route Details',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _infoRow('Pickup Point', pickup?.pickUpName),
+            _infoRow('Drop Point', school?.schoolName),
+            _infoRow('Route Name', route?.routeName),
+          ],
+        ),
+      );
     });
   }
 }
 
-class MapSection extends StatelessWidget {
-  const MapSection({super.key});
+/// --- Shared Card Wrapper ---
+class _ModernCard extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const _ModernCard({required this.title, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ChildrenInnerPageController>(builder: (logic) {
-      return Column(
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Student Location',
-            style: customStyle(15.0, Colors.black, FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 7,
-          ),
-          Container(
-            width: context.cWidth,
-            height: 110,
-            decoration: BoxDecoration(
-                color: const Color.fromRGBO(232, 231, 233, 1),
-                borderRadius: BorderRadius.circular(11)),
-            child: GoogleMap(
-              // markers: logic.markersSet,
-              mapType: MapType.normal,
-              myLocationEnabled: true,
-              onMapCreated: (GoogleMapController controller) {
-                // logic.controller = controller;
-                // logic.manager?.setMapId(controller.mapId);
-              },
-              initialCameraPosition: logic.kGooglePlex,
-              // onCameraMove: logic.manager?.onCameraMove,
-              // onCameraIdle: logic.manager?.updateMap,
-              zoomControlsEnabled: false,
-            ),
-          )
+          Text(title,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 10),
+          child,
         ],
-      ).cPadOnly(t: 10);
-    });
+      ),
+    );
   }
+}
+
+/// --- Small Info Text Row ---
+Widget _infoRow(String label, String? value) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            '$label:',
+            style: const TextStyle(fontSize: 12.5, color: Colors.grey),
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            value ?? 'N/A',
+            style: const TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class OtherInfo extends StatelessWidget {
@@ -610,69 +593,85 @@ class OtherInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(
-        'Other Info',
-        style: customStyle(15.0, Colors.black, FontWeight.bold),
-      ),
-      const SizedBox(
-        height: 8,
-      ),
-      Container(
-        // height: 115,
-        padding: const EdgeInsets.all(15),
+    return GetBuilder<ChildrenInnerPageController>(builder: (logic) {
+      final data = logic.studentViewById?.data;
+
+      return Container(
+        margin: const EdgeInsets.only(top: 16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-            color: const Color.fromRGBO(232, 231, 233, 1),
-            borderRadius: BorderRadius.circular(10)),
-        child: GetBuilder<ChildrenInnerPageController>(builder: (logic) {
-          return Column(
-            children: [
-              OtherInfoType(
-                head: 'Route',
-                info: logic.studentViewById?.data?.busInRoute?.routeInfo
-                        ?.routeName ??
-                    '',
-              ),
-              OtherInfoType(
-                head: 'City',
-                info: logic.studentViewById?.data?.country ?? '',
-              ),
-              OtherInfoType(
-                head: 'Region',
-                info: logic.studentViewById?.data?.state ?? '',
-              ),
-              OtherInfoType(
-                head: 'Service Start Date',
-                info: (logic.studentViewById?.data?.serviceStartedOn ?? '')
-                    .cGetFormattedDate(format: 'dd MMM yyyy'),
-              ),
-              OtherInfoType(
-                head: 'Service End Date',
-                info: (logic.studentViewById?.data?.serviceEndedOn ?? '')
-                    .cGetFormattedDate(format: 'dd MMM yyyy'),
-              ),
-            ],
-          );
-        }),
-      )
-    ]).cPadOnly(t: 10);
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Other Information',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+
+            // Info Rows
+            _infoTile('Route', data?.busInRoute?.routeInfo?.routeName),
+            _infoTile('City', data?.country),
+            _infoTile('Region', data?.state),
+            _infoTile(
+                'Service Start Date',
+                (data?.serviceStartedOn ?? '')
+                    .cGetFormattedDate(format: 'dd MMM yyyy')),
+            _infoTile(
+                'Service End Date',
+                (data?.serviceEndedOn ?? '')
+                    .cGetFormattedDate(format: 'dd MMM yyyy')),
+          ],
+        ),
+      );
+    });
   }
-}
 
-class OtherInfoType extends StatelessWidget {
-  final String head;
-  final String info;
-
-  const OtherInfoType({super.key, required this.head, required this.info});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(head),
-        Text(info),
-      ],
+  /// --- Shared Row Style ---
+  Widget _infoTile(String label, String? value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13.5,
+                color: Colors.grey,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Text(
+              value?.isNotEmpty == true ? value! : '-',
+              textAlign: TextAlign.end,
+              style: const TextStyle(
+                fontSize: 13.5,
+                color: Colors.black87,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

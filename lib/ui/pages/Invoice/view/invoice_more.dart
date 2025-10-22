@@ -724,6 +724,44 @@ void payBillPopupInVoice({
                         ).cPadOnly(l: 7),
                       ],
                     ),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            'Accepted Payment Methods',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/visa.png',
+                                height: 25,
+                                fit: BoxFit.contain,
+                              ),
+                              const SizedBox(width: 10),
+                              Image.asset(
+                                'assets/images/mastercard.png',
+                                height: 25,
+                                fit: BoxFit.contain,
+                              ),
+                              const SizedBox(width: 10),
+                              SvgPicture.asset(
+                                'assets/images/mada.svg',
+                                height: 25,
+                                fit: BoxFit.contain,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ]).cPadAll(15),
             );
           }),
